@@ -254,7 +254,7 @@ Func startAfk()
 		$timeToRefresh = formatMs( $interval - TimerDiff($totalTimer) )
 
 		setToolTip("IdlescapeAutoAfk ✔ | Refreshes: <" & $refreshes & "> | Time ran: " & $timeRan & " | Next refresh: " & $timeToRefresh)
-		Sleep(1000)
+		Sleep(5000)
 	WEnd
 EndFunc
 
