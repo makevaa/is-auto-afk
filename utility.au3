@@ -196,3 +196,20 @@ Func showHelp()
 	_ExtMsgBox(0, 'OK', 'IdleScape AutoAfk: help.txt', FileRead($File1, FileGetSize($File1)))
 	;_ExtMsgBoxSet($iStyle, $iJust, [$iBkCol, [$iCol, [$sFont_Size, [$iFont_Name, [$iWidth, [$iWidth_Abs, [$sFocus_Char, [$sTitlebar_Icon]]]]]]]])
 EndFunc
+
+
+Func formatMs($ms)
+	Local $s = $ms/1000
+	Local $m = $s/60
+	Local $h = $m/60
+	Local $d = $h/24
+	
+	$s = Mod($s,60)
+	$m = Mod($m,60)
+	$h = Mod($h,24)
+	$d = Floor($d)
+
+	Local $str = StringFormat("%02d:%02d:%02d:%02d", $d, $h, $m, $s)
+	
+	return $str
+EndFunc

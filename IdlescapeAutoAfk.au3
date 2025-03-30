@@ -21,45 +21,22 @@
 #include <Misc.au3>
 #include <GDIPlus.au3>
 
-;#include <WinAPISys.au3>
-;#include <WinAPITheme.au3>
-
 
 
 Global $scriptName = "Idlescape AutoAfk"
-Global $scriptVersion = "0.0.1 proto"
+Global $scriptVersion = "1.0.1 styx"
 Global $windowTitle = $scriptName & " v" & $scriptVersion
 
 
 Global $configFile = @ScriptDir & "\files\config.ini"
-Global $macroFile = @ScriptDir & "\files\macro.ini"
 
-
-;F5 reloads game, removed from hotkey list for now
-;F8 is reserved as a panic button to interrupt macros and return to idle
-;F11 is fullscreen, F12 is reserved for Windows
 Global $idleHotkey = "F10"
 Global $idleHotkeyCode = "79" ;77 F8 key, 79 f10, 7A F11
 
 
 
-
-Global $guiBannerImage = "\files\img\FlyffHelper_banner.png"
-Global $guiBannerImageW = 200
-Global $guiBannerImageH = 700
-Global $guiBannerImageX = 960
-Global $guiBannerImageY = 40 
-
-Global $guiIconImage = "\files\icon.ico"
-Global $guiIconImageW = 40
-Global $guiIconImageH = 40
-Global $guiIconImageX = 590
-Global $guiIconImageY = 428
-
-
 #include "utility.au3"
 #include "lib/GuiFlatButton.au3"
-
 
 #include "lib/GUIComboBox/GUICtrlComboSetColors.au3"
 #include "lib/GUIComboBox/GUIComboBoxColor.au3"
@@ -67,10 +44,7 @@ Global $guiIconImageY = 428
 #include "lib/ExtMsgBox/ExtMsgBox.au3"
 
 #include "gui.au3"
-#include "infobox.au3"
-#include "client.au3"
 #include "save.au3"
-#include "graphics.au3"
 
 
 ; Initilaize ExtMsgBox styles
@@ -90,30 +64,14 @@ Func idle()
 
 	While 1
 		Switch GUIGetMsg()
-
-			;Case $detectClientsButton
-			;	detectClients()		
-
-			;Case $resetClientsButton
-			;	resetClients()		
-
 			Case $GUI_EVENT_CLOSE
 				exitScript()
-
-			;Case $toggleInputButton
-			;	toggleInput() ;utility.au3		
 
 			Case $hideTitle
 				setWindowTitle()
 
 			Case $hideIcon
 				setWindowIcon()
-
-			;Case $windowRenamingFormatInput
-			;	saveSettings()
-
-			;Case $renameFormatHelpButton
-			;	showWindowRenameFormatHelp()
 
 			Case $helpButton
 				showHelp()
@@ -123,10 +81,6 @@ Func idle()
 		sleep(50)
 	WEnd
 EndFunc
-
-
-
-
 
 
 Func activateChrome()
@@ -164,6 +118,8 @@ Func refreshCharacter($left)
 	Press Enter to open address
 	Wait a moment
 	CTRL + F5 (hard-reload page to update client)
+	Check for login screen
+		Select login button and enter if in login screen
 	Click character image (main/iron, left/right)
 	Wait a moment
 	Close tab (CTRL + W)
@@ -200,7 +156,6 @@ Func refreshCharacter($left)
 	;Wait a moment
 	Sleep(1000)
 
-
 	;CTRL + F5 (hard-reload page to update client)
 	Sleep(500)
 	Send("^{F5}")
@@ -213,18 +168,15 @@ Func refreshCharacter($left)
 	Sleep(500)
 
 	if ClipGet () == "https://www.idlescape.com/login" Then
-		; Click login button
 		; Send tabs to select login button
 		For $i = 0 To 10 Step +1
 			Send("{TAB}")
 			Sleep(500)
 		Next
-
+		; Click login button
 		Send("{ENTER}")
 		Sleep(500)
 	EndIf
-
-
 
 	;Click character image (left)
 	moveMouseToCharacter($left)
@@ -270,58 +222,49 @@ Func wait($min, $max, $dll)
 EndFunc
 
 
-
-
-
 Func startAfk() 
 	Local $startTime = _NowTime()
 	Local $totalTimer = TimerInit()
+	Local $refreshes = 0
 
 	Local $intervalMin = 1000*60*60*11 ;ms, 11 hours
 	Local $intervalMax = 1000*60*60*12 ;ms, 12 hours
 
-	Local $interval = ranNum($intervalMin, $intervalMax)
-	Local $intervalTimer = TimerInit()
-	;Local $lastRefresh = _NowTime()
-
-	;refresh characters on start
+	; Refresh characters on start
 	If (true) Then
 		refreshCharacters()
+		$refreshes += 1
 	EndIf
 
+	Local $interval = ranNum($intervalMin, $intervalMax)
+	Local $intervalTimer = TimerInit()
+
+	$timeRan = formatMs(TimerDiff($totalTimer))
+	$timeToRefresh = formatMs( $interval - TimerDiff($totalTimer) )
 
 	While True
 		If ( timerDiff($intervalTimer) >  $interval) Then
 			refreshCharacters()
 			$intervalTimer = TimerInit()
 			$interval = ranNum($intervalMin, $intervalMax)
+			$refreshes += 1
 		EndIf
 
-		setToolTip("IdlescapeAutoAfk: afking...")
+		$timeRan = formatMs(TimerDiff($totalTimer))
+		$timeToRefresh = formatMs( $interval - TimerDiff($totalTimer) )
+
+		setToolTip("IdlescapeAutoAfk ✔ | Refreshes: <" & $refreshes & "> | Time ran: " & $timeRan & " | Next refresh: " & $timeToRefresh)
 		Sleep(1000)
 	WEnd
-
-	
-
-
 EndFunc
 
 
-
-
-
-;loadMacros()
-;loadHotkeys($configFile)
 loadSettings($configFile)
-
-
-;fillGuiHotkeyMenus() ;utility.au3
 
 
 GUISetState(@SW_SHOW, $mainGui)
 
 
-;setHotkeys()
 setWindowTitle()
 setWindowIcon()
 
