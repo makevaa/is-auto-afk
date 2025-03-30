@@ -281,7 +281,8 @@ Func startAfk()
 	Local $intervalMax = 1000*60*60*12 ;ms, 12 hours
 
 	Local $interval = ranNum($intervalMin, $intervalMax)
-	Local $lastRefresh = _NowTime()
+	Local $intervalTimer = TimerInit()
+	;Local $lastRefresh = _NowTime()
 
 	;refresh characters on start
 	If (true) Then
@@ -290,9 +291,9 @@ Func startAfk()
 
 
 	While True
-		If (timerDiff($lastRefresh) >  $interval ) Then
+		If ( timerDiff($intervalTimer) >  $interval) Then
 			refreshCharacters()
-			$lastRefresh = _NowTime()
+			$intervalTimer = TimerInit()
 			$interval = ranNum($intervalMin, $intervalMax)
 		EndIf
 
