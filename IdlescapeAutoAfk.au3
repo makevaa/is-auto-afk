@@ -260,14 +260,10 @@ EndFunc
 
 
 loadSettings($configFile)
-
-
 GUISetState(@SW_SHOW, $mainGui)
-
 
 setWindowTitle()
 setWindowIcon()
-
 
 HotkeySet ("{F9}", startAfk)
 HotkeySet ("{" & $idleHotkey & "}", idle)
