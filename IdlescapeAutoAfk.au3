@@ -116,7 +116,7 @@ Func idle()
 			;	showWindowRenameFormatHelp()
 
 			Case $helpButton
-				showReadme()
+				showHelp()
 		EndSwitch
 	
 		;drawGraphics()

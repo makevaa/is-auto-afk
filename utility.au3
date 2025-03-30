@@ -191,8 +191,8 @@ Func showWindowRenameFormatHelp()
 	;_ExtMsgBoxSet($iStyle, $iJust, [$iBkCol, [$iCol, [$sFont_Size, [$iFont_Name, [$iWidth, [$iWidth_Abs, [$sFocus_Char, [$sTitlebar_Icon]]]]]]]])
 EndFunc
 
-Func showReadme()
-	$File1 = 'readme.txt'
-	_ExtMsgBox(0, 'OK', 'FlyffHelper: readme.txt', FileRead($File1, FileGetSize($File1)))
+Func showHelp()
+	$File1 = 'help.txt'
+	_ExtMsgBox(0, 'OK', 'IdleScape AutoAfk: help.txt', FileRead($File1, FileGetSize($File1)))
 	;_ExtMsgBoxSet($iStyle, $iJust, [$iBkCol, [$iCol, [$sFont_Size, [$iFont_Name, [$iWidth, [$iWidth_Abs, [$sFocus_Char, [$sTitlebar_Icon]]]]]]]])
 EndFunc

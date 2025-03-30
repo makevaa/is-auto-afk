@@ -4,8 +4,9 @@
 Global $COLOR_GREY = $COLOR_GRAY
 
 Global $guiOffset = 3
-Global $settingsColumnX = 620 ;column in gui for client settings etc.
-Global $guiSize[2] = [1180, 800] ;x, y
+Global $settingsColumnX = 50 ;column in gui for client settings etc.
+;Global $guiSize[2] = [500, 300] ;x, y
+Global $guiSize[2] = [400, 300] ;x, y
 
 Global $guiBgColor = "0x" & "192534" ; 252526 1f272e 192534
 Global $guiDefaultTextColor = 0xffffff
@@ -66,13 +67,7 @@ Func createShadow($guiCtrl, $offset=3, $color=0x111922)
 
 EndFunc
 
-; Move FlatButtons after caluclating their position with guiCoordMode
-; Windows scaling makes this wonky, doesn't work
-Func moveFlatButtons()
-	Local $formatHelpButtonPos = GuiFlatButton_GetPos($renameFormatHelpButton)
-	;MsgBox(0, 'debug', $formatHelpButtonPos[0] & " " & $formatHelpButtonPos[1])
-	GuiFlatButton_SetPos($renameFormatHelpButton, $formatHelpButtonPos[0], $formatHelpButtonPos[1])
-EndFunc
+
 
 Global $mainGui = GUICreate($windowTitle, $guiSize[0], $guiSize[1])
 ;Global $mainGui = GUICreate($windowTitle, $guiSize[0], $guiSize[1], -1, -1, -1, BitOR($WS_SYSMENU, $SS_CENTERIMAGE) )
@@ -81,36 +76,52 @@ GUISetBkColor($guiBgColor, $mainGui)
 GUICtrlSetDefColor($guiDefaultTextColor) ;0xff981f 0x00d2ac 0x00d0ff 0xffff40 0x00ff00
 
 
+coordMode('abs')
+Global $guiScriptNameLabel = GUICtrlCreateLabel($scriptName &  @CRLF & "v" & $scriptVersion, 50, 20)
+GUICtrlSetColor($guiScriptNameLabel, 0x00ffff)
+GUICtrlSetBkColor($guiScriptNameLabel, $guiBgColor)
+;GUICtrlSetColor(-1, $COLOR_BLUE)
+
+coordMode('rel')
+Global $hideTitle = GUICtrlCreateCheckbox(" ", 200, -5, 20, default)
+Global $hideIcon = GUICtrlCreateCheckbox(" ", 0, 20, 20, default)
+Global $hideTitleLabel = GUICtrlCreateLabel("Hide title", 20, -20+$guiOffset, 90, default)
+Global $hideIconLabel = GUICtrlCreateLabel("Hide icon", 0, 20, 90, default)
+
+GUICtrlSetBkColor($hideTitle, $guiBgColor)
+GUICtrlSetBkColor($hideIcon, $guiBgColor)
+;GUICtrlSetColor($hideTitleLabel, $guiDefaultTextColor)
+GUICtrlSetColor($hideIconLabel, $guiDefaultTextColor)
+
+coordMode('abs')
+Global $hotkeysLabel = GUICtrlCreateLabel("• F9 start afk" & @CRLF & "• F10 idle/end afk" & @CRLF & "• F11 exit script", 50, 80, 200, 60)
+GUICtrlSetColor(-1, $COLOR_GRAY)
 
 
-
-;tämä tekee kirjastolla luoduista nappuloista näkymättömät kun käynnistää, tulevat näkyviin vasta hoverilla
-;käytetään normaalia GUISetBkColor toistaiseksi
-;Global $guiBg = GUICtrlCreateLabel("", 0, 0, $guiSize[0] - 200, $guiSize[1])
-;GUICtrlSetBkColor($guiBg, $guiBgColor)
-;GUICtrlSetState($guiBg, $GUI_DISABLE)
-
-
-
+coordMode('abs')
+Global $helpButton = GuiFlatButton_Create("Help",  100, 180, 100, 50)
+GUICtrlSetFont(-1, 10, $FW_NORMAL, $GUI_FONTNORMAL, "Consolas")
+createShadow($helpButton, 3)
+GUICtrlSetCursor ($helpButton, $MCID_HAND)
 
 
 ; Create macro area border with labels to enable changing the border color and line width
-createGuiRect($macroRect[0], $macroRect[1], $macroRect[2], $macroRect[3], $macroRect[4], $macroRect[5], $macroRect[6])
-GUICtrlCreateLabel($macroRect[6], $macroRect[0]+10, $macroRect[1]-8, 80, 50, $SS_CENTER) ;macro group label to properly enable changing colors
-GUICtrlSetColor(-1, $COLOR_GRAY)
-GUICtrlSetBkColor(-1, $guiBgColor)
+;createGuiRect($macroRect[0], $macroRect[1], $macroRect[2], $macroRect[3], $macroRect[4], $macroRect[5], $macroRect[6])
+;GUICtrlCreateLabel($macroRect[6], $macroRect[0]+10, $macroRect[1]-8, 80, 50, $SS_CENTER) ;macro group label to properly enable changing colors
+;GUICtrlSetColor(-1, $COLOR_GRAY)
+;GUICtrlSetBkColor(-1, $guiBgColor)
 
 
 
 ; Create client area  border
-createGuiRect($clientRect[0], $clientRect[1], $clientRect[2], $clientRect[3], $clientRect[4], $clientRect[5], $clientRect[6])
-GUICtrlCreateLabel($clientRect[6], $clientRect[0]+10, $clientRect[1]-8, 150, 20, $SS_CENTER) ;macro group label to properly enable changing colors
-GUICtrlSetColor(-1, $COLOR_GRAY)
-GUICtrlSetBkColor(-1, $guiBgColor)
+;createGuiRect($clientRect[0], $clientRect[1], $clientRect[2], $clientRect[3], $clientRect[4], $clientRect[5], $clientRect[6])
+;GUICtrlCreateLabel($clientRect[6], $clientRect[0]+10, $clientRect[1]-8, 150, 20, $SS_CENTER) ;macro group label to properly enable changing colors
+;GUICtrlSetColor(-1, $COLOR_GRAY)
+;GUICtrlSetBkColor(-1, $guiBgColor)
 
 
+#cs
 coordMode('abs')
-;createGuiBox($settingsColumnX+5, 70+5, 150, 60, 0x111922)
 Global $detectClientsButton = GuiFlatButton_Create("Detect clients", $settingsColumnX, 70, 150, 60)
 GUICtrlSetFont(-1, 10, $FW_NORMAL, $GUI_FONTNORMAL, "Consolas") 
 createShadow($detectClientsButton)
@@ -120,26 +131,23 @@ Global $resetClientsButton = GuiFlatButton_Create("Reset"&@CRLF&"clients", $sett
 GUICtrlSetFont(-1, 10, $FW_NORMAL, $GUI_FONTNORMAL, "Consolas") ;
 createShadow($resetClientsButton)
 GUICtrlSetCursor ($resetClientsButton, $MCID_HAND)
+#ce
 
-
+#cs
 ; Loading bar
 coordMode('abs')
 Global $clientSetupLoadingBar = GUICtrlCreateLabel("", $settingsColumnX, 185, 285, 20, $WS_EX_LAYERED)
 GUICtrlSetColor($clientSetupLoadingBar, 0x00bfff)
-;GUICtrlSetBkColor($clientSetupLoadingBar, 0x111922)
 GUICtrlSetFont($clientSetupLoadingBar, 12, $FW_NORMAL, $GUI_FONTNORMAL, "Consolas") 
 
 Global $clientSetupStatus = GUICtrlCreateLabel("✖ Game clients not set", $settingsColumnX, 145, 285, 40, BitOR($SS_CENTER, $SS_CENTERIMAGE, $WS_EX_LAYERED) )
 GUICtrlSetColor($clientSetupStatus, 0xcc0000)
 GUICtrlSetBkColor($clientSetupStatus, 0x111922) ; 0x333333 0xd9d9d9 0x111922
 GUICtrlSetFont($clientSetupStatus, 12, $FW_BOLD, $GUI_FONTNORMAL, "Consolas") 
+#ce
 
 
-
-
-
-
-
+#cs
 coordMode('rel')
 Global $windowRenamingFormatLabel = GUICtrlCreateLabel("Client rename format:", 0, 80)
 GUICtrlSetColor($windowRenamingFormatLabel, $COLOR_GREY)
@@ -150,16 +158,12 @@ GUICtrlSetBkColor($windowRenamingFormatLabel, $guiBgColor)
 Global $windowRenamingFormatInput = GUICtrlCreateInput( "Flyff (ROLE)", 0, 25, 230, 20, -1, BitOR($WS_EX_LAYERED, $ES_MULTILINE))
 GUICtrlSetColor($windowRenamingFormatInput, $COLOR_GREY)
 GUICtrlSetBkColor($windowRenamingFormatInput, $guiTextFieldBgColor)
+#ce
 
 
-; $guiButtonBgColor guiBgColor
 
-coordMode('abs')
-Global $renameFormatHelpButton = GuiFlatButton_Create("?",  $settingsColumnX+240, 230, 30, 30)
-GUICtrlSetFont(-1, 10, $FW_NORMAL, $GUI_FONTNORMAL, "Consolas")
-createShadow($renameFormatHelpButton, 3)
-GUICtrlSetCursor ($renameFormatHelpButton, $MCID_HAND)
 
+#cs
 ;GUICtrlCreateLabel("(NAME=char | ROLE=main/support)", 0, 30)
 ;GUICtrlSetColor(-1, $COLOR_GRAY)
 
@@ -167,16 +171,16 @@ coordMode('abs')
 GUICtrlCreateLabel("Main char:", $settingsColumnX, 295)
 GUICtrlSetColor(-1, $COLOR_GREY)
 coordMode('rel')
-Global $mainCharNameInput = GUICtrlCreateInput( "paxu", 135, 0, 150, 20, -1, BitOR($WS_EX_LAYERED, $ES_MULTILINE)) 
+Global $mainCharNameInput = GUICtrlCreateInput( "", 135, 0, 150, 20, -1, BitOR($WS_EX_LAYERED, $ES_MULTILINE)) 
+#ce
 
 
-
-
+#cs
 coordMode('abs')
 GUICtrlCreateLabel("Support char:", $settingsColumnX, 325)
 GUICtrlSetColor(-1, $COLOR_GREY)
 coordMode('rel')
-Global $supportCharNameInput = GUICtrlCreateInput( "Sukka", 135, 0, 150, 20, -1, BitOR($WS_EX_LAYERED, $ES_MULTILINE)) 
+Global $supportCharNameInput = GUICtrlCreateInput( "", 135, 0, 150, 20, -1, BitOR($WS_EX_LAYERED, $ES_MULTILINE)) 
 
 GUICtrlSetColor($mainCharNameInput, $COLOR_GREY)
 GUICtrlSetColor($supportCharNameInput, $COLOR_GREY)
@@ -191,37 +195,11 @@ Global $useControlSendInputLabel = GUICtrlCreateLabel("ControlSend (beta)", 20, 
 GUICtrlSetBkColor($useControlSendInputLabel, $guiBgColor)
 ;GUICtrlSetColor($hideTitleLabel, $guiDefaultTextColor)
 GUICtrlSetColor($useControlSendInputLabel, $guiDefaultTextColor)
+#ce
 
 
 
-
-
-coordMode('abs')
-Global $guiScriptNameLabel = GUICtrlCreateLabel($scriptName &  @CRLF & "v" & $scriptVersion, $settingsColumnX+20, 430)
-GUICtrlSetColor($guiScriptNameLabel, $COLOR_GRAY)
-GUICtrlSetBkColor($guiScriptNameLabel, $guiBgColor)
-;GUICtrlSetColor(-1, $COLOR_BLUE)
-
-
-
-
-coordMode('rel')
-
-Global $hideTitle = GUICtrlCreateCheckbox(" ", 120, -5, 20, default)
-Global $hideIcon = GUICtrlCreateCheckbox(" ", 0, 20, 20, default)
-Global $hideTitleLabel = GUICtrlCreateLabel("Hide title", 20, -20+$guiOffset, 90, default)
-Global $hideIconLabel = GUICtrlCreateLabel("Hide icon", 0, 20, 90, default)
-
-GUICtrlSetBkColor($hideTitle, $guiBgColor)
-GUICtrlSetBkColor($hideIcon, $guiBgColor)
-;GUICtrlSetColor($hideTitleLabel, $guiDefaultTextColor)
-GUICtrlSetColor($hideIconLabel, $guiDefaultTextColor)
-
-
-
-
-
-
+#cs
 ;Global $oldGameIconInput = GUICtrlCreateCheckbox(" ", 120, -5, 20, default)
 ;Global $oldGameIconLabel = GUICtrlCreateLabel("Old game icon", 0, 20, 100, default)
 
@@ -253,7 +231,7 @@ Global $scriptStatusLabel = GUICtrlCreateLabel("  ■ Macro engine ready...", $t
 ;GUICtrlSetColor($scriptStatusLabel, 0x0099ff)
 GUICtrlSetColor($scriptStatusLabel, $COLOR_LIME)
 GUICtrlSetBkColor($scriptStatusLabel, 0x111922)
-
+#ce
 
 
 
