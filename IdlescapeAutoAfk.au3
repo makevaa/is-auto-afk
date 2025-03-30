@@ -24,7 +24,7 @@
 
 
 Global $scriptName = "Idlescape AutoAfk"
-Global $scriptVersion = "1.0.1 styx"
+Global $scriptVersion = "1.0.2 styx"
 Global $windowTitle = $scriptName & " v" & $scriptVersion
 
 
