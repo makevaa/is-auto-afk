@@ -9,23 +9,23 @@
 #include <GuiEdit.au3>
 
 #include <ButtonConstants.au3>
-#include <ComboConstants.au3>
-#Include <Array.au3>
+;#include <ComboConstants.au3>
+;#Include <Array.au3>
 #include <AutoItConstants.au3>
 #include <Date.au3>
 #include <WinAPI.au3>
-#include <File.au3>
+;#include <File.au3>
 #include <FontConstants.au3>
 #include <StaticConstants.au3>
-#include <ScreenCapture.au3>
+;#include <ScreenCapture.au3>
 #include <Misc.au3>
 #include <GDIPlus.au3>
 
 
 
-Global $scriptName = "Idlescape AutoAfk"
-Global $scriptVersion = "1.0.2 styx"
-Global $windowTitle = $scriptName & " v" & $scriptVersion
+Global $scriptName = "IS-AutoAfk"
+Global $scriptVersion = "1.0.3"
+Global $windowTitle = $scriptName
 
 
 Global $configFile = @ScriptDir & "\files\config.ini"
@@ -44,7 +44,7 @@ Global $idleHotkeyCode = "79" ;77 F8 key, 79 f10, 7A F11
 #include "lib/ExtMsgBox/ExtMsgBox.au3"
 
 #include "gui.au3"
-#include "save.au3"
+
 
 
 ; Initilaize ExtMsgBox styles
@@ -67,17 +67,10 @@ Func idle()
 			Case $GUI_EVENT_CLOSE
 				exitScript()
 
-			Case $hideTitle
-				setWindowTitle()
-
-			Case $hideIcon
-				setWindowIcon()
-
 			Case $helpButton
 				showHelp()
 		EndSwitch
 	
-		;drawGraphics()
 		sleep(50)
 	WEnd
 EndFunc
@@ -159,7 +152,7 @@ Func refreshCharacter($left)
 	;CTRL + F5 (hard-reload page to update client)
 	Sleep(500)
 	Send("^{F5}")
-	Sleep(10000)
+	Sleep(15000)
 
 	; Check for login screen
 	Send("!d") ; Select address bar url
@@ -198,31 +191,10 @@ Func refreshCharacters()
 EndFunc
 
 
-Func panicButtonPressed($dll)
-	If _IsPressed($idleHotkeyCode, $dll) Then 
-		DllClose($dll)
-		return true
-	Else
-		return false
-	EndIf
-EndFunc
-
-
-Func wait($min, $max, $dll)
-	Local $timeout = ranNum($min, $max)
-	Local $timer = TimerInit()
-
-	While True
-		If timerDiff($timer) >  $timeout Then ExitLoop
-		If panicButtonPressed($dll) Then 
-			idle()
-		EndIf
-		Sleep(20)
-	WEnd
-EndFunc
 
 
 Func startAfk() 
+	setToolTip("IdlescapeAutoAfk ✔ | Starting...")
 	Local $startTime = _NowTime()
 	Local $totalTimer = TimerInit()
 	Local $refreshes = 0
@@ -230,8 +202,12 @@ Func startAfk()
 	Local $intervalMin = 1000*60*60*11 ;ms, 11 hours
 	Local $intervalMax = 1000*60*60*12 ;ms, 12 hours
 
+	;$intervalMin = 1000*60*1 ;debug
+	;$intervalMax = 1000*60*1.5 ;debug
+
 	; Refresh characters on start
 	If (true) Then
+		setToolTip("IdlescapeAutoAfk ✔ | Refreshing on start...")
 		refreshCharacters()
 		$refreshes += 1
 	EndIf
@@ -243,7 +219,8 @@ Func startAfk()
 	$timeToRefresh = formatMs( $interval - TimerDiff($totalTimer) )
 
 	While True
-		If ( timerDiff($intervalTimer) >  $interval) Then
+		If ( timerDiff($intervalTimer) > $interval) Then
+			setToolTip("IdlescapeAutoAfk ✔ | Time ran: " & $timeRan & " | Refreshing...")
 			refreshCharacters()
 			$intervalTimer = TimerInit()
 			$interval = ranNum($intervalMin, $intervalMax)
@@ -251,19 +228,17 @@ Func startAfk()
 		EndIf
 
 		$timeRan = formatMs(TimerDiff($totalTimer))
-		$timeToRefresh = formatMs( $interval - TimerDiff($totalTimer) )
+		$timeToRefresh = formatMs($interval - TimerDiff($intervalTimer))
 
-		setToolTip("IdlescapeAutoAfk ✔ | Refreshes: <" & $refreshes & "> | Time ran: " & $timeRan & " | Next refresh: " & $timeToRefresh)
-		Sleep(5000)
+		setToolTip("IdlescapeAutoAfk ✔ | Time ran: " & $timeRan & " | Next refresh: " & $timeToRefresh & " | Refreshes: <" & $refreshes & ">")
+		Sleep(10000)
 	WEnd
 EndFunc
 
 
-loadSettings($configFile)
 GUISetState(@SW_SHOW, $mainGui)
 
-setWindowTitle()
-setWindowIcon()
+
 
 HotkeySet ("{F9}", startAfk)
 HotkeySet ("{" & $idleHotkey & "}", idle)

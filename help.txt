@@ -1,10 +1,9 @@
-☠ IdleScape AutoAfk
-☠ created in 2025-03-30
+☠ IS-AutoAfk
+☠ created 2025-03-30
 
-Program to refresh you IS characters every 11-12 h.
+Program to refresh you IdleScape characters every 11-12 h.
+Made with AutoIt v3 for Windows.
 
 To start:
 1. Open Google Chrome with an empty tab
 2. Press F9 (start hotkey)
-
-Made with AutoIt v3 for Windows.
