@@ -24,7 +24,7 @@
 
 
 Global $scriptName = "IS-AutoAfk"
-Global $scriptVersion = "1.0.3"
+Global $scriptVersion = "1.0.31"
 Global $windowTitle = $scriptName
 
 
@@ -215,8 +215,8 @@ Func startAfk()
 	Local $interval = ranNum($intervalMin, $intervalMax)
 	Local $intervalTimer = TimerInit()
 
-	$timeRan = formatMs(TimerDiff($totalTimer))
-	$timeToRefresh = formatMs( $interval - TimerDiff($totalTimer) )
+	$timeRan = formatMs(TimerDiff($totalTimer), true)
+	$timeToRefresh = formatMs( $interval - TimerDiff($totalTimer), false )
 
 	While True
 		If ( timerDiff($intervalTimer) > $interval) Then
@@ -227,8 +227,8 @@ Func startAfk()
 			$refreshes += 1
 		EndIf
 
-		$timeRan = formatMs(TimerDiff($totalTimer))
-		$timeToRefresh = formatMs($interval - TimerDiff($intervalTimer))
+		$timeRan = formatMs(TimerDiff($totalTimer), true)
+		$timeToRefresh = formatMs($interval - TimerDiff($intervalTimer), false)
 
 		setToolTip("IdlescapeAutoAfk ✔ | Time ran: " & $timeRan & " | Next refresh: " & $timeToRefresh & " | Refreshes: <" & $refreshes & ">")
 		Sleep(10000)

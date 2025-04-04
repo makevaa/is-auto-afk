@@ -198,7 +198,7 @@ Func showHelp()
 EndFunc
 
 
-Func formatMs($ms)
+Func formatMs($ms, $days)
 	Local $s = $ms/1000
 	Local $m = $s/60
 	Local $h = $m/60
@@ -209,7 +209,11 @@ Func formatMs($ms)
 	$h = Mod($h,24)
 	$d = Floor($d)
 
-	Local $str = StringFormat("%02d:%02d:%02d:%02d", $d, $h, $m, $s)
+	Local $str = StringFormat("%02d:%02d:%02d", $h, $m, $s)
+
+	if ($days) Then
+		$str = StringFormat("%s days, %02d:%02d:%02d", $d, $h, $m, $s)
+	EndIf
 	
 	return $str
 EndFunc
