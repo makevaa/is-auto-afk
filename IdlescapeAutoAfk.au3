@@ -24,7 +24,7 @@
 
 
 Global $scriptName = "IS-AutoAfk"
-Global $scriptVersion = "1.0.31"
+Global $scriptVersion = "1.0.32"
 Global $windowTitle = $scriptName
 
 
@@ -126,61 +126,56 @@ Func refreshCharacter($left)
 	;Start script with chrome active with an empty tab
 
 	;Activate Chrome window
-	Sleep(500)
+	Sleep(1000)
 	activateChrome()
 
 	;Open new tab (CTRL + T)
-	Sleep(500)
+	Sleep(1000)
 	Send("^t")
 
 	;Select Chrome address bar (ALT + D)
-	Sleep(500)
+	Sleep(1000)
 	Send("!d")
 
 	;Paste "https://www.play.idlescape.com/characters" to address bar
-	Sleep(500)
+	Sleep(1000)
 	Send("https://www.play.idlescape.com/characters{ENTER}")
-	
-
-	;Press Enter to open address
-	Sleep(500)
-	;Send("{ENTER}")
 
 	;Wait a moment
-	Sleep(1000)
+	Sleep(10000)
 
 	;CTRL + F5 (hard-reload page to update client)
-	Sleep(500)
+	Sleep(1000)
 	Send("^{F5}")
-	Sleep(15000)
+	Sleep(30000)
 
 	; Check for login screen
 	Send("!d") ; Select address bar url
-	Sleep(500)
+	Sleep(1000)
 	Send("^c") ; Copy url to clipboard
-	Sleep(500)
+	Sleep(1000)
 
 	if ClipGet () == "https://www.idlescape.com/login" Then
 		; Send tabs to select login button
 		For $i = 0 To 10 Step +1
 			Send("{TAB}")
-			Sleep(500)
+			Sleep(1000)
 		Next
 		; Click login button
 		Send("{ENTER}")
-		Sleep(500)
+		Sleep(1000)
 	EndIf
 
 	;Click character image (left)
 	moveMouseToCharacter($left)
-	Sleep(1000)
+	Sleep(10000)
 	MouseClick($MOUSE_CLICK_LEFT)
 
 	;Wait a moment
-	Sleep(10000)
+	Sleep(30000)
 
 	;Close tab (CTRL + W)
-	Sleep(500)
+	Sleep(1000)
 	Send("^w")
 EndFunc
 
@@ -199,8 +194,8 @@ Func startAfk()
 	Local $totalTimer = TimerInit()
 	Local $refreshes = 0
 
-	Local $intervalMin = 1000*60*60*11 ;ms, 11 hours
-	Local $intervalMax = 1000*60*60*12 ;ms, 12 hours
+	Local $intervalMin = 1000*60*60*11 ;ms, 11 h
+	Local $intervalMax = 1000*60*60*11.5 ;max 11.5 h
 
 	;$intervalMin = 1000*60*1 ;debug
 	;$intervalMax = 1000*60*1.5 ;debug
