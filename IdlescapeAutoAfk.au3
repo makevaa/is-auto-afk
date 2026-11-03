@@ -24,7 +24,7 @@
 
 
 Global $scriptName = "IS-AutoAfk"
-Global $scriptVersion = "1.0.32"
+Global $scriptVersion = "1.1.1"
 Global $windowTitle = $scriptName
 
 
@@ -76,12 +76,13 @@ Func idle()
 EndFunc
 
 
-Func activateChrome()
-	Local $browserTitle = "New Tab - Google Chrome"
+Func activateBrowser()
+	Local $browserTitle = "Mozilla Firefox"
 	If WinExists($browserTitle) Then
 		WinActivate($browserTitle)
 	EndIf
-EndFunc
+EndFunc()
+
 
 
 Func moveMouseToCharacter($left)
@@ -102,10 +103,14 @@ EndFunc
 
 Func refreshCharacter($left) 
 #cs 
-	Start script with chrome active with an empty tab
+	Start script with browsewr (Firefox expected) active with an empty tab
 
-	Activate Chrome window
+	Activate browser window
 	Open new tab (CTRL + T)
+
+	paused the update here, need to get to know the hotkeys on Firefox
+	scipt worked well on chrome for a few motnhs non-stop
+
 	Select Chrome address bar (ALT + D)
 	Paste "https://www.play.idlescape.com/characters", 
 	Press Enter to open address
@@ -125,9 +130,9 @@ Func refreshCharacter($left)
 
 	;Start script with chrome active with an empty tab
 
-	;Activate Chrome window
+	;Activate browser window
 	Sleep(1000)
-	activateChrome()
+	activateBrowser()
 
 	;Open new tab (CTRL + T)
 	Sleep(1000)
@@ -139,10 +144,10 @@ Func refreshCharacter($left)
 
 	;Paste "https://www.play.idlescape.com/characters" to address bar
 	Sleep(1000)
-	Send("https://www.play.idlescape.com/characters{ENTER}")
+	Send("https://play.idlescape.com/{ENTER}")
 
 	;Wait a moment
-	Sleep(10000)
+	Sleep(30000)
 
 	;CTRL + F5 (hard-reload page to update client)
 	Sleep(1000)
@@ -155,8 +160,8 @@ Func refreshCharacter($left)
 	Send("^c") ; Copy url to clipboard
 	Sleep(1000)
 
-	if ClipGet () == "https://www.idlescape.com/login" Then
-		; Send tabs to select login button
+	if ClipGet () == "https://play.idlescape.com/characters" Then
+		; Send tabs to select login button, first character (main)
 		For $i = 0 To 10 Step +1
 			Send("{TAB}")
 			Sleep(1000)
@@ -167,9 +172,9 @@ Func refreshCharacter($left)
 	EndIf
 
 	;Click character image (left)
-	moveMouseToCharacter($left)
-	Sleep(10000)
-	MouseClick($MOUSE_CLICK_LEFT)
+	;moveMouseToCharacter($left)
+	;Sleep(10000)
+	;MouseClick($MOUSE_CLICK_LEFT)
 
 	;Wait a moment
 	Sleep(30000)
@@ -182,7 +187,7 @@ EndFunc
 
 Func refreshCharacters()
 	refreshCharacter(true) ; Click left character (main)
-	refreshCharacter(false) ;Click right charcater (ironman)
+	;refreshCharacter(false) ;Click right charcater (ironman)
 EndFunc
 
 
