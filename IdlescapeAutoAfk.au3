@@ -81,7 +81,7 @@ Func activateBrowser()
 	If WinExists($browserTitle) Then
 		WinActivate($browserTitle)
 	EndIf
-EndFunc()
+EndFunc
 
 
 
