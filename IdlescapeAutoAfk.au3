@@ -24,7 +24,7 @@
 
 
 Global $scriptName = "IS-AutoAfk"
-Global $scriptVersion = "1.1.1"
+Global $scriptVersion = "1.1.2"
 Global $windowTitle = $scriptName
 
 
@@ -162,7 +162,7 @@ Func refreshCharacter($left)
 
 	if ClipGet () == "https://play.idlescape.com/characters" Then
 		; Send tabs to select login button, first character (main)
-		For $i = 0 To 10 Step +1
+		For $i = 1 To 11 Step +1
 			Send("{TAB}")
 			Sleep(1000)
 		Next
