@@ -24,7 +24,7 @@
 
 
 Global $scriptName = "IS-AutoAfk"
-Global $scriptVersion = "1.1.2"
+Global $scriptVersion = "1.1.3"
 Global $windowTitle = $scriptName
 
 
@@ -159,9 +159,12 @@ Func refreshCharacter($left)
 	Sleep(1000)
 	Send("^c") ; Copy url to clipboard
 	Sleep(1000)
+	Send("{TAB}") ; Move selection away from address bar to close the dropdown menu
+	Sleep(1000)
 
 	if ClipGet () == "https://play.idlescape.com/characters" Then
 		; Send tabs to select login button, first character (main)
+		#cs
 		For $i = 1 To 11 Step +1
 			Send("{TAB}")
 			Sleep(1000)
@@ -169,12 +172,17 @@ Func refreshCharacter($left)
 		; Click login button
 		Send("{ENTER}")
 		Sleep(1000)
+		#ce
+	Else
+		idle()
 	EndIf
 
-	;Click character image (left)
-	;moveMouseToCharacter($left)
-	;Sleep(10000)
-	;MouseClick($MOUSE_CLICK_LEFT)
+	; Click character image (left)
+	moveMouseToCharacter($left)
+	Sleep(10000)
+	MouseClick($MOUSE_CLICK_LEFT)
+
+	
 
 	;Wait a moment
 	Sleep(30000)
@@ -187,7 +195,7 @@ EndFunc
 
 Func refreshCharacters()
 	refreshCharacter(true) ; Click left character (main)
-	;refreshCharacter(false) ;Click right charcater (ironman)
+	;refreshCharacter(false) ;Click right character (ironman)
 EndFunc
 
 
